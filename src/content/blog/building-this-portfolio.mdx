@@ -1,0 +1,30 @@
+---
+title: "Building this portfolio as a build log"
+description: "The idea behind treating a portfolio like a running commit history instead of a highlight reel."
+date: "2026-01-12"
+tags: ["nextjs", "design"]
+isPlaceholder: true
+---
+
+Most portfolio sites curate away the mess: a handful of polished projects,
+a tidy bio, a stock-photo headshot. That felt dishonest for where I
+actually am — most of my public work is small, timeboxed practice, not
+finished products.
+
+So instead of hiding that, this site leans into it:
+
+- **Projects** are pulled live from the GitHub API, not hand-picked and
+  frozen in time.
+- A small number of repos get a full case-study writeup; the rest link
+  straight out to GitHub.
+- The **experience timeline** reads like a changelog, in chronological
+  order, not reordered for effect.
+
+## Stack
+
+Built with Next.js (App Router), TypeScript, and Tailwind CSS v4. Blog
+posts are MDX files rendered server-side with `next-mdx-remote`, no extra
+content pipeline. Dark mode via `next-themes`, motion via `motion`.
+
+PLACEHOLDER — replace this post with a real write-up once the site has
+actually shipped.
