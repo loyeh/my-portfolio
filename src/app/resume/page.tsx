@@ -25,7 +25,7 @@ export default function ResumePage() {
         <SectionHeading
           eyebrow="Resume"
           title={siteConfig.name}
-          subtitle={`${siteConfig.role} · ${siteConfig.location}`}
+          subtitle={siteConfig.role}
         />
 
         <div className="mb-12">

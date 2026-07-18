@@ -14,7 +14,7 @@ export async function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-paper via-paper/95 to-paper" />
       <Container className="relative py-24 md:py-36">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-brass">
-          {siteConfig.role} · {siteConfig.location}
+          {siteConfig.role}
         </p>
 
         <h1 className="mt-6 max-w-3xl font-display text-5xl italic leading-[1.05] tracking-tight text-ink md:text-7xl">

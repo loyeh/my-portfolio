@@ -28,8 +28,7 @@ export function Footer() {
     <footer className="border-t border-line">
       <Container className="flex flex-col gap-4 py-10 text-sm text-ink-soft md:flex-row md:items-center md:justify-between">
         <p className="font-mono text-xs">
-          <span className="text-brass">$</span> {siteConfig.name} — built &amp; logged from{" "}
-          {siteConfig.location}, {year}
+          <span className="text-brass">$</span> {siteConfig.name} — built &amp; logged in public, {year}
         </p>
         <div className="flex items-center gap-4">
           {siteConfig.socials.map((social) => (

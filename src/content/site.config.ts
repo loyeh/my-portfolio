@@ -5,7 +5,6 @@ export const siteConfig: SiteConfig = {
   name: "Ahmad Asadi Looyeh",
   role: "Full-Stack Developer",
   tagline: "Shipping full-stack, logging the practice in public.",
-  location: "Rasht, Gilan, Iran",
   githubUsername: "loyeh",
   contactEmail: "asadi_loyeh@yahoo.com",
   isPlaceholder: {

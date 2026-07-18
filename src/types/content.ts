@@ -8,7 +8,6 @@ export interface SiteConfig {
   name: string;
   role: string;
   tagline: string;
-  location: string;
   githubUsername: string;
   contactEmail: string;
   isPlaceholder: {
