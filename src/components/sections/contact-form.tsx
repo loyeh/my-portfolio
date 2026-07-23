@@ -1,27 +1,60 @@
 "use client";
 
 import { useState } from "react";
-import { siteConfig } from "@/content/site.config";
 import { Button } from "@/components/ui/button";
+
+type Status = "idle" | "sending" | "sent" | "error";
 
 export function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [company, setCompany] = useState(""); // honeypot, kept empty by real users
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const canSubmit = name.trim() && email.trim() && message.trim();
+  const canSubmit = name.trim() && email.trim() && message.trim() && status !== "sending";
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!canSubmit) return;
 
-    const subject = encodeURIComponent(`Portfolio contact from ${name}`);
-    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
-    window.location.href = `mailto:${siteConfig.contactEmail}?subject=${subject}&body=${body}`;
+    setStatus("sending");
+    setErrorMessage("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message, company }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error || "Something went wrong. Please try again.");
+      }
+
+      setStatus("sent");
+      setName("");
+      setEmail("");
+      setMessage("");
+    } catch (err) {
+      setStatus("error");
+      setErrorMessage(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    }
   }
 
   const inputClasses =
     "w-full rounded-md border border-line bg-card px-4 py-3 text-sm text-ink placeholder:text-ink-soft/60 focus:border-brass";
+
+  if (status === "sent") {
+    return (
+      <p className="rounded-md border border-line bg-card px-4 py-3 text-sm text-ink-soft">
+        Thanks — your message is on its way. I&apos;ll get back to you soon.
+      </p>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -70,13 +103,23 @@ export function ContactForm() {
         />
       </div>
 
-      <p className="font-mono text-xs text-ink-soft">
-        Submitting opens your email client, addressed to me — nothing is sent from
-        this page directly.
-      </p>
+      <input
+        type="text"
+        name="company"
+        value={company}
+        onChange={(e) => setCompany(e.target.value)}
+        tabIndex={-1}
+        autoComplete="off"
+        className="hidden"
+        aria-hidden="true"
+      />
+
+      {status === "error" && (
+        <p className="font-mono text-xs text-red-500">{errorMessage}</p>
+      )}
 
       <Button type="submit" disabled={!canSubmit} className="disabled:opacity-40">
-        Send message
+        {status === "sending" ? "Sending…" : "Send message"}
       </Button>
     </form>
   );
