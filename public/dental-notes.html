@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b6b63">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="مراجعه‌ها">
+<title>دفتر مراجعه‌ها</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: one narrow phone-first column; list ⇄ form ⇄ summary views, sticky save bar on the form */
+:root {
+  --bg: #f2f5f4;
+  --surface: #ffffff;
+  --ink: #17262a;
+  --muted: #5d6f72;
+  --line: #d6e0de;
+  --accent: #0b6b63;
+  --accent-soft: #dcefeb;
+  --warm: #b0502a;
+  --warm-soft: #f7e6dd;
+  --font: "Vazirmatn", "Tahoma", "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1719; --surface: #172225; --ink: #e3ecea; --muted: #93a6a6; --line: #2a3a3d;
+    --accent: #4fc2b3; --accent-soft: #173a37; --warm: #e8916a; --warm-soft: #3a2419;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { padding-top: env(safe-area-inset-top, 0px); }
+body { margin: 0; -webkit-text-size-adjust: 100%; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.7; }
+.wrap {
+  max-width: 640px; margin: 0 auto;
+  padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1 { font-size: 1.6rem; font-weight: 800; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-size: 1.05rem; font-weight: 700; margin: 0; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 0.85rem; margin: 2px 0 0; }
+header.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.tooth { width: 34px; height: 34px; flex: none; }
+.brand { display: flex; gap: 10px; align-items: center; }
+
+.tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
+.tabs button { border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 0.88rem; font-weight: 500; padding: 6px 14px; border-radius: 999px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--surface); }
+
+button, input, textarea { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.btn { border: 1px solid var(--accent); background: var(--accent); color: var(--surface); font-size: 0.95rem; font-weight: 700; padding: 10px 18px; border-radius: 12px; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.danger { background: transparent; color: var(--warm); border-color: var(--warm); }
+.btn.danger.solid { background: var(--warm); color: var(--surface); }
+
+.status { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 6px; margin: 0 0 14px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+.dot.ok { background: var(--accent); }
+.dot.warn { background: var(--warm); }
+
+/* list */
+.list { display: grid; gap: 10px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; text-align: right; width: 100%; color: inherit; font: inherit; cursor: pointer; display: grid; gap: 6px; }
+.card:hover { border-color: var(--accent); }
+.card .row1 { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.card .name { font-weight: 700; font-size: 1rem; }
+.card .date { color: var(--muted); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 0.75rem; padding: 1px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.tag.warm { background: var(--warm-soft); color: var(--warm); }
+.card .pain { font-size: 0.85rem; color: var(--muted); overflow-wrap: anywhere; }
+
+.empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 28px 20px; text-align: center; display: grid; gap: 10px; justify-items: center; }
+.empty p { margin: 0; color: var(--muted); max-width: 36ch; }
+.newbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.count { color: var(--muted); font-size: 0.85rem; }
+
+/* form */
+.formhead { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
+.back { border: 0; background: none; color: var(--accent); font: inherit; font-weight: 500; cursor: pointer; padding: 4px 0; }
+fieldset { border: 0; margin: 0 0 12px; padding: 16px; background: var(--surface); border-radius: 14px; border: 1px solid var(--line); display: grid; gap: 14px; min-width: 0; }
+legend { float: right; width: 100%; padding: 0; display: flex; gap: 8px; align-items: baseline; }
+legend .n { color: var(--accent); font-weight: 800; font-variant-numeric: tabular-nums; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > label, .field > .lbl { font-size: 0.85rem; font-weight: 500; color: var(--muted); }
+.field input[type="text"], .field input[type="number"], .field textarea {
+  width: 100%; border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+  border-radius: 10px; padding: 9px 12px; font-size: 0.95rem;
+}
+.field textarea { min-height: 70px; resize: vertical; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 5px 13px; font-size: 0.88rem; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.hint { font-size: 0.75rem; color: var(--muted); }
+.err { color: var(--warm); font-size: 0.8rem; }
+.savebar {
+  position: sticky; bottom: 0; background: var(--bg);
+  padding-top: 10px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center; border-top: 1px solid var(--line);
+}
+.savebar .grow { flex: 1; }
+.confirm { font-size: 0.85rem; color: var(--warm); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+/* summary */
+.sumblock { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 12px; display: grid; gap: 12px; }
+.bars { display: grid; gap: 6px; }
+.bar { display: grid; grid-template-columns: minmax(0, 9em) 1fr auto; gap: 10px; align-items: center; font-size: 0.85rem; }
+.bar .track { height: 8px; border-radius: 4px; background: var(--accent-soft); overflow: hidden; }
+.bar .fill { height: 100%; background: var(--accent); border-radius: 4px; }
+.bar .v { font-variant-numeric: tabular-nums; color: var(--muted); min-width: 2ch; text-align: left; }
+.qlabel { font-size: 0.85rem; font-weight: 700; }
+.quotes { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.quotes li { font-size: 0.9rem; border-right: 3px solid var(--warm); padding: 2px 10px 2px 0; overflow-wrap: anywhere; }
+.quotes li.good { border-color: var(--accent); }
+.quotes li small { color: var(--muted); display: block; font-size: 0.75rem; }
+.copyout { width: 100%; min-height: 160px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); padding: 10px; font-size: 0.8rem; }
+.questions { margin: 0; padding-right: 1.2em; display: grid; gap: 4px; font-size: 0.9rem; }
+
+.backup { display: flex; gap: 8px; flex-wrap: wrap; }
+[hidden] { display: none !important; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 18px; border-radius: 999px; font-size: 0.88rem; z-index: 20; }
+@media (prefers-reduced-motion: no-preference) { .toast { transition: opacity .2s; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <svg class="tooth" viewBox="0 0 32 32" aria-hidden="true"><path d="M9 4c-3.5 0-6 2.8-6 6.6 0 3 1.2 5 2.2 7.3.9 2.2 1.2 4.7 1.8 7.3.4 1.8 1.2 3 2.4 3 1.6 0 2-1.8 2.5-4 .5-2.3 1.3-4.6 4.1-4.6s3.6 2.3 4.1 4.6c.5 2.2.9 4 2.5 4 1.2 0 2-1.2 2.4-3 .6-2.6.9-5.1 1.8-7.3 1-2.3 2.2-4.3 2.2-7.3C29 6.8 26.5 4 23 4c-2.8 0-4.4 1.6-7 1.6S11.8 4 9 4z" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <div>
+        <h1>دفتر مراجعه‌ها</h1>
+        <p class="sub">یادداشت بعد از هر مراجعه به مطب دندانپزشکی</p>
+      </div>
+    </div>
+    <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" id="tab-list" aria-selected="true" data-view="list">مراجعه‌ها</button>
+      <button role="tab" id="tab-summary" aria-selected="false" data-view="summary">جمع‌بندی</button>
+    </div>
+  </header>
+  <p class="status" id="status"><span class="dot"></span><span>در حال اتصال…</span></p>
+  <main id="app"></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function () {
+  const fa = n => Number(n).toLocaleString('fa-IR');
+  const todayFa = () => { try { return new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date()); } catch (e) { return ''; } };
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  const SECTIONS = [
+    { title: 'مطب', fields: [
+      { k: 'date', label: 'تاریخ', type: 'text' },
+      { k: 'clinic', label: 'مطب / پزشک', type: 'text', ph: 'مثلاً دکتر …، کلینیک …', req: true },
+      { k: 'specialty', label: 'تخصص', type: 'one', opts: ['عمومی', 'ایمپلنت', 'پروتز', 'ارتودنسی', 'لثه (پریو)', 'عصب‌کشی (اندو)', 'جراحی فک', 'سایر'] },
+      { k: 'clinicType', label: 'نوع مطب', type: 'one', opts: ['تک‌پزشک', 'چندپزشک', 'کلینیک'] },
+    ]},
+    { title: 'نوبت‌گیری', fields: [
+      { k: 'bookMethod', label: 'روش نوبت‌گیری', type: 'many', opts: ['تلفن', 'سایت یا اپ', 'پیام‌رسان', 'حضوری'] },
+      { k: 'bookEffort', label: 'چقدر طول کشید یا چند بار تماس گرفتید؟', type: 'text' },
+      { k: 'reminder', label: 'یادآوری نوبت', type: 'one', opts: ['پیامک', 'تماس', 'نداشت'] },
+      { k: 'wait', label: 'زمان انتظار در مطب (دقیقه)', type: 'number' },
+    ]},
+    { title: 'پذیرش', fields: [
+      { k: 'recTool', label: 'ابزار منشی', type: 'one', opts: ['دفتر کاغذی', 'اکسل', 'نرم‌افزار', 'ندیدم'] },
+      { k: 'software', label: 'اسم نرم‌افزار', type: 'text', show: d => d.recTool === 'نرم‌افزار' },
+      { k: 'records', label: 'پرونده', type: 'one', opts: ['کاغذی', 'دیجیتال', 'ندیدم'] },
+      { k: 'xray', label: 'رادیوگرافی', type: 'one', opts: ['فیلم', 'دیجیتال روی سیستم', 'روی CD یا پیام‌رسان به بیمار'] },
+      { k: 'busy', label: 'منشی شلوغ و پرتماس بود؟', type: 'one', opts: ['بله', 'نه'] },
+    ]},
+    { title: 'طرح درمان و هزینه', fields: [
+      { k: 'treatment', label: 'درمان پیشنهادی', type: 'text', ph: 'مثلاً ۲ ایمپلنت + روکش' },
+      { k: 'planFormat', label: 'طرح درمان چطور ارائه شد؟', type: 'one', opts: ['شفاهی', 'کاغذ دست‌نویس', 'پرینت', 'دیجیتال'] },
+      { k: 'costClear', label: 'هزینه‌ی کل شفاف گفته شد؟', type: 'one', opts: ['بله', 'تقریبی', 'نه'] },
+      { k: 'cost', label: 'هزینه‌ی اعلام‌شده', type: 'text' },
+      { k: 'sessions', label: 'تعداد جلسات پیش‌بینی‌شده', type: 'text' },
+    ]},
+    { title: 'پرداخت و اقساط', fields: [
+      { k: 'payMethod', label: 'روش پرداخت', type: 'many', opts: ['کارت‌خوان', 'کارت به کارت', 'نقد', 'چک'] },
+      { k: 'installments', label: 'قسط داشت؟', type: 'one', opts: ['بله', 'نه'] },
+      { k: 'instRecord', label: 'اقساط چطور ثبت می‌شود؟', type: 'one', opts: ['دفتر', 'نرم‌افزار', 'چک', 'نمی‌دانم'], show: d => d.installments === 'بله' },
+      { k: 'instReminder', label: 'برای قسط یادآوری می‌کنند؟', type: 'one', opts: ['بله', 'نه', 'نمی‌دانم'], show: d => d.installments === 'بله' },
+    ]},
+    { title: 'گفتگو', fields: [
+      { k: 'staffNote', label: 'نکته‌ای که منشی یا پزشک گفت', type: 'area', ph: 'شکایت، نیاز، نظرشان درباره‌ی نرم‌افزار فعلی…' },
+      { k: 'followup', label: 'امکان گفتگوی بعدی هست؟', type: 'one', opts: ['بله', 'هنوز نه'] },
+      { k: 'contact', label: 'راه ارتباط', type: 'text', show: d => d.followup === 'بله' },
+    ]},
+    { title: 'تجربه‌ی من به‌عنوان بیمار', fields: [
+      { k: 'worst', label: 'بدترین قسمت تجربه', type: 'area' },
+      { k: 'best', label: 'بهترین قسمت', type: 'area' },
+      { k: 'idea', label: 'اگر نرم‌افزار داشتند، چه چیزی بهتر می‌شد؟', type: 'area' },
+    ]},
+  ];
+  const ALL = SECTIONS.flatMap(s => s.fields);
+
+  /* ---------- storage: this browser only (localStorage), with file backup ---------- */
+  const LS_KEY = 'dafter-moraje-v1';
+  const local = {
+    read() { try { const x = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); return Array.isArray(x) ? x : []; } catch (e) { return []; } },
+    write(list) { try { localStorage.setItem(LS_KEY, JSON.stringify(list)); return true; } catch (e) { return false; } },
+  };
+  let visits = [];
+  let loaded = false;
+
+  function setStatus(kind, text) {
+    const el = document.getElementById('status');
+    el.innerHTML = '<span class="dot ' + kind + '"></span><span>' + esc(text) + '</span>';
+  }
+
+  async function initStore() {
+    let ok = true;
+    try { localStorage.setItem(LS_KEY + '-probe', '1'); localStorage.removeItem(LS_KEY + '-probe'); } catch (e) { ok = false; }
+    visits = local.read();
+    loaded = true;
+    if (!ok) { setStatus('warn', 'مرورگر اجازه‌ی ذخیره نمی‌دهد (شاید حالت ناشناس است). یادداشت‌ها با بستن صفحه پاک می‌شوند.'); }
+    else {
+      let persisted = false;
+      try { if (navigator.storage && navigator.storage.persist) persisted = await navigator.storage.persist(); } catch (e) {}
+      setStatus(persisted ? 'ok' : 'warn', persisted
+        ? 'روی همین گوشی ذخیره می‌شود. هر چند وقت یک بار از تب جمع‌بندی پشتیبان بگیرید.'
+        : 'روی همین گوشی ذخیره می‌شود. مرورگر ممکن است داده‌ها را پاک کند، پس از تب جمع‌بندی پشتیبان بگیرید.');
+    }
+    render();
+  }
+
+  async function saveVisit(v) {
+    const list = local.read().filter(x => x.id !== v.id); list.push(v);
+    if (!local.write(list)) throw new Error('storage');
+    visits = list;
+  }
+  async function removeVisit(id) {
+    const list = local.read().filter(x => x.id !== id);
+    if (!local.write(list)) throw new Error('storage');
+    visits = list;
+  }
+
+  function backupFile() {
+    const blob = new Blob([JSON.stringify({ app: 'dafter-moraje', version: 1, exportedAt: new Date().toISOString(), visits: local.read() }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'dental-notes-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function restoreFile(file) {
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const data = JSON.parse(r.result);
+        const incoming = Array.isArray(data) ? data : data.visits;
+        if (!Array.isArray(incoming)) throw new Error('shape');
+        const byId = {};
+        local.read().forEach(v => byId[v.id] = v);
+        let added = 0;
+        incoming.forEach(v => { if (v && v.id) { if (!byId[v.id]) added++; byId[v.id] = v; } });
+        if (!local.write(Object.values(byId))) throw new Error('storage');
+        visits = local.read();
+        toast(fa(added) + ' مراجعه‌ی جدید بازگردانی شد');
+        render();
+      } catch (e) { toast('این فایل پشتیبان دفتر مراجعه‌ها نیست.'); }
+    };
+    r.readAsText(file);
+  }
+
+  /* ---------- views ---------- */
+  let view = 'list';
+  let draft = null;
+  let confirmDelete = false;
+  let showErr = false;
+  const app = document.getElementById('app');
+
+  function sorted() { return visits.slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); }
+
+  function render() {
+    document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === view || (view === 'form' && b.dataset.view === 'list'))));
+    if (view === 'form') renderForm();
+    else if (view === 'summary') renderSummary();
+    else renderList();
+  }
+
+  function renderList() {
+    const list = sorted();
+    if (!list.length) {
+      app.innerHTML = '<div class="empty">' +
+        '<h2>' + (loaded ? 'هنوز مراجعه‌ای ثبت نشده' : 'در حال بارگذاری…') + '</h2>' +
+        '<p>بعد از هر مراجعه به مطب، چند دقیقه وقت بگذارید و تجربه‌تان را ثبت کنید. بعد از ۳ تا ۵ مراجعه، تب «جمع‌بندی» الگوهای تکراری را نشان می‌دهد.</p>' +
+        '<button class="btn" id="new-first">ثبت اولین مراجعه</button></div>';
+      document.getElementById('new-first').onclick = () => openForm();
+      return;
+    }
+    app.innerHTML = '<div class="newbar"><span class="count">' + fa(list.length) + ' مراجعه</span><button class="btn" id="new">+ مراجعه‌ی جدید</button></div>' +
+      '<div class="list">' + list.map(v => {
+        const tags = [v.specialty, v.clinicType, v.recTool === 'نرم‌افزار' && v.software ? v.software : v.recTool].filter(Boolean)
+          .map(t => '<span class="tag">' + esc(t) + '</span>').join('');
+        const warm = v.installments === 'بله' ? '<span class="tag warm">قسطی</span>' : '';
+        return '<button class="card" data-id="' + esc(v.id) + '">' +
+          '<div class="row1"><span class="name">' + esc(v.clinic || 'بدون نام') + '</span><span class="date">' + esc(v.date) + '</span></div>' +
+          ((tags || warm) ? '<div class="tags">' + tags + warm + '</div>' : '') +
+          (v.worst ? '<div class="pain">😣 ' + esc(v.worst) + '</div>' : '') +
+          '</button>';
+      }).join('') + '</div>';
+    document.getElementById('new').onclick = () => openForm();
+    app.querySelectorAll('.card').forEach(c => c.onclick = () => openForm(visits.find(v => v.id === c.dataset.id)));
+  }
+
+  function openForm(v) {
+    draft = v ? JSON.parse(JSON.stringify(v)) : { id: 'v' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), date: todayFa(), _new: true };
+    confirmDelete = false; showErr = false;
+    view = 'form'; render(); window.scrollTo(0, 0);
+  }
+
+  function fieldHtml(f) {
+    if (f.show && !f.show(draft)) return '';
+    const id = 'f-' + f.k;
+    const val = draft[f.k];
+    let inner = '';
+    if (f.type === 'one' || f.type === 'many') {
+      inner = '<div class="lbl" id="' + id + '-l">' + esc(f.label) + (f.type === 'many' ? ' <span class="hint">(چند گزینه)</span>' : '') + '</div>' +
+        '<div class="chips" role="group" aria-labelledby="' + id + '-l">' + f.opts.map((o, i) => {
+          const on = f.type === 'many' ? (Array.isArray(val) && val.includes(o)) : val === o;
+          return '<button type="button" class="chip" id="' + id + '-' + i + '" data-k="' + f.k + '" data-o="' + esc(o) + '" aria-pressed="' + on + '">' + esc(o) + '</button>';
+        }).join('') + '</div>';
+    } else if (f.type === 'area') {
+      inner = '<label for="' + id + '">' + esc(f.label) + '</label><textarea id="' + id + '" data-k="' + f.k + '" placeholder="' + esc(f.ph || '') + '">' + esc(val || '') + '</textarea>';
+    } else {
+      inner = '<label for="' + id + '">' + esc(f.label) + '</label><input type="' + (f.type === 'number' ? 'number' : 'text') + '" inputmode="' + (f.type === 'number' ? 'numeric' : 'text') + '" id="' + id + '" data-k="' + f.k + '" value="' + esc(val || '') + '" placeholder="' + esc(f.ph || '') + '">';
+      if (f.req && showErr && !String(val || '').trim()) inner += '<span class="err">اسم مطب یا پزشک را بنویسید تا بتوانید ذخیره کنید.</span>';
+    }
+    return '<div class="field">' + inner + '</div>';
+  }
+
+  function renderForm() {
+    const isNew = draft._new;
+    app.innerHTML = '<div class="formhead"><button class="back" id="back">→ بازگشت</button><span class="count">' + (isNew ? 'مراجعه‌ی جدید' : 'ویرایش مراجعه') + '</span></div>' +
+      '<form id="vform" novalidate>' +
+      SECTIONS.map((s, i) => '<fieldset><legend><span class="n">' + fa(i + 1) + '</span><h2>' + esc(s.title) + '</h2></legend>' + s.fields.map(fieldHtml).join('') + '</fieldset>').join('') +
+      '<div class="savebar">' +
+        '<button type="submit" class="btn" id="save">ذخیره</button>' +
+        '<span class="grow"></span>' +
+        (isNew ? '' : (confirmDelete
+          ? '<span class="confirm">این مراجعه پاک شود؟ <button type="button" class="btn danger solid" id="del-yes">بله، پاک کن</button><button type="button" class="btn ghost" id="del-no">نه</button></span>'
+          : '<button type="button" class="btn danger" id="del">حذف</button>')) +
+      '</div></form>';
+
+    document.getElementById('back').onclick = () => { view = 'list'; render(); };
+    app.querySelectorAll('.chip').forEach(ch => ch.onclick = () => {
+      const f = ALL.find(x => x.k === ch.dataset.k), o = ch.dataset.o;
+      if (f.type === 'many') {
+        const arr = Array.isArray(draft[f.k]) ? draft[f.k].slice() : [];
+        const i = arr.indexOf(o); i >= 0 ? arr.splice(i, 1) : arr.push(o);
+        draft[f.k] = arr;
+      } else draft[f.k] = draft[f.k] === o ? '' : o;
+      const y = window.scrollY, focusId = ch.id;
+      renderForm(); window.scrollTo(0, y);
+      const again = document.getElementById(focusId); if (again) again.focus({ preventScroll: true });
+    });
+    app.querySelectorAll('input[data-k], textarea[data-k]').forEach(el => el.oninput = () => { draft[el.dataset.k] = el.value; });
+    const d = document.getElementById('del'); if (d) d.onclick = () => { confirmDelete = true; renderForm(); };
+    const dn = document.getElementById('del-no'); if (dn) dn.onclick = () => { confirmDelete = false; renderForm(); };
+    const dy = document.getElementById('del-yes'); if (dy) dy.onclick = async () => {
+      try { await removeVisit(draft.id); toast('حذف شد'); view = 'list'; render(); }
+      catch (e) { toast('حذف نشد. اتصال را بررسی کنید و دوباره امتحان کنید.'); }
+    };
+    document.getElementById('vform').onsubmit = async ev => {
+      ev.preventDefault();
+      if (!String(draft.clinic || '').trim()) { showErr = true; renderForm(); document.getElementById('f-clinic').focus(); return; }
+      const v = {};
+      ALL.forEach(f => { if (f.show && !f.show(draft)) return; const x = draft[f.k]; if (x !== undefined && x !== '' && !(Array.isArray(x) && !x.length)) v[f.k] = x; });
+      v.id = draft.id;
+      v.createdAt = draft.createdAt || Date.now();
+      v.updatedAt = Date.now();
+      const btn = document.getElementById('save'); btn.disabled = true; btn.textContent = 'در حال ذخیره…';
+      try { await saveVisit(v); toast('ذخیره شد'); view = 'list'; render(); window.scrollTo(0, 0); }
+      catch (e) { btn.disabled = false; btn.textContent = 'ذخیره'; toast('ذخیره نشد. اتصال را بررسی کنید و دوباره امتحان کنید.'); }
+    };
+  }
+
+  function exportText(list) {
+    return list.map((v, i) => {
+      const lines = ['مراجعه ' + fa(i + 1)];
+      ALL.forEach(f => { const x = v[f.k]; if (x === undefined || x === '') return; lines.push(f.label + ': ' + (Array.isArray(x) ? x.join('، ') : x)); });
+      return lines.join('\n');
+    }).join('\n\n---\n\n');
+  }
+
+  function renderSummary() {
+    const list = sorted().reverse();
+    const n = list.length;
+    if (!n) {
+      app.innerHTML = '<div class="empty"><h2>جمع‌بندی بعد از اولین مراجعه</h2><p>اینجا می‌بینید مطب‌ها از چه ابزاری استفاده می‌کنند، کدام مشکل‌ها تکرار می‌شوند و کدام مطب‌ها برای پایلوت مناسب‌اند.</p><button class="btn" id="new-first">ثبت اولین مراجعه</button></div>' +
+        '<div style="height:12px"></div>' + backupHtml();
+      document.getElementById('new-first').onclick = () => openForm();
+      wireBackup();
+      return;
+    }
+    const pick = ['recTool', 'records', 'reminder', 'planFormat', 'costClear', 'installments', 'instRecord', 'bookMethod', 'payMethod'];
+    const blocks = pick.map(k => {
+      const f = ALL.find(x => x.k === k);
+      const counts = {};
+      list.forEach(v => { const x = v[k]; (Array.isArray(x) ? x : x ? [x] : []).forEach(o => counts[o] = (counts[o] || 0) + 1); });
+      const rows = f.opts.filter(o => counts[o]).map(o =>
+        '<div class="bar"><span>' + esc(o) + '</span><span class="track"><span class="fill" style="width:' + Math.round(counts[o] / n * 100) + '%"></span></span><span class="v">' + fa(counts[o]) + '</span></div>').join('');
+      return rows ? '<div><div class="qlabel">' + esc(f.label) + '</div><div class="bars">' + rows + '</div></div>' : '';
+    }).filter(Boolean).join('');
+
+    const softwares = [...new Set(list.map(v => v.software).filter(Boolean))];
+    const pilots = list.filter(v => v.followup === 'بله');
+    const quote = (k, cls) => list.filter(v => v[k]).map(v => '<li class="' + cls + '">' + esc(v[k]) + '<small>' + esc(v.clinic) + '</small></li>').join('');
+    const worst = quote('worst', ''), ideas = quote('idea', 'good'), staff = quote('staffNote', '');
+
+    app.innerHTML =
+      '<div class="sumblock"><h2>' + fa(n) + ' مراجعه تا امروز</h2>' +
+        (n < 3 ? '<p class="hint">برای دیدن الگوها حداقل ۳ مراجعه لازم است. فعلاً داده‌ها کم است.</p>' : '') +
+        blocks + '</div>' +
+      (softwares.length ? '<div class="sumblock"><h2>نرم‌افزارهای رقیب که دیدید</h2><div class="tags">' + softwares.map(s => '<span class="tag">' + esc(s) + '</span>').join('') + '</div></div>' : '') +
+      (worst ? '<div class="sumblock"><h2>مشکل‌هایی که تجربه کردید</h2><ul class="quotes">' + worst + '</ul></div>' : '') +
+      (staff ? '<div class="sumblock"><h2>حرف‌های کادر مطب</h2><ul class="quotes">' + staff + '</ul></div>' : '') +
+      (ideas ? '<div class="sumblock"><h2>ایده‌های نرم‌افزاری</h2><ul class="quotes">' + ideas + '</ul></div>' : '') +
+      '<div class="sumblock"><h2>کاندیداهای پایلوت</h2>' +
+        (pilots.length ? '<ul class="quotes">' + pilots.map(v => '<li class="good">' + esc(v.clinic) + (v.contact ? '<small>' + esc(v.contact) + '</small>' : '') + '</li>').join('') + '</ul>'
+          : '<p class="hint">هنوز مطبی را برای گفتگوی بعدی علامت نزده‌اید.</p>') + '</div>' +
+      '<div class="sumblock"><h2>سه سؤال برای تصمیم‌گیری</h2><ol class="questions">' +
+        '<li>کدام مشکل در بیشتر مطب‌ها تکرار شد؟ این ویژگی اصلی MVP است.</li>' +
+        '<li>مطب‌ها الان از چه ابزاری استفاده می‌کنند؟ این‌ها رقبای شما هستند.</li>' +
+        '<li>کدام مطب‌ها احتمالاً حاضرند پایلوت را امتحان کنند؟</li></ol></div>' +
+      '<div class="sumblock"><h2>ارسال برای تحلیل</h2>' +
+        '<p class="hint">متن همه‌ی مراجعه‌ها را کپی کنید و در گفتگو با Claude بفرستید.</p>' +
+        '<div><button class="btn ghost" id="copy">کپی متن همه‌ی مراجعه‌ها</button></div>' +
+        '<textarea class="copyout" id="copyout" readonly hidden></textarea></div>' +
+      backupHtml();
+    wireBackup();
+
+    document.getElementById('copy').onclick = () => {
+      const text = exportText(list);
+      const fallback = () => { const t = document.getElementById('copyout'); t.hidden = false; t.value = text; t.focus(); t.select(); toast('متن را انتخاب کردم. با نگه‌داشتن انگشت کپی کنید.'); };
+      try { navigator.clipboard.writeText(text).then(() => toast('کپی شد'), fallback); } catch (e) { fallback(); }
+    };
+  }
+
+  function backupHtml() {
+    return '<div class="sumblock"><h2>پشتیبان</h2>' +
+      '<p class="hint">یادداشت‌ها فقط روی همین گوشی است. اگر حافظه‌ی مرورگر پاک شود یا گوشی را عوض کنید، با فایل پشتیبان برمی‌گردند.</p>' +
+      '<div class="backup"><button class="btn ghost" id="bk-save">ذخیره‌ی فایل پشتیبان</button>' +
+      '<button class="btn ghost" id="bk-load">بازگردانی از فایل</button></div>' +
+      '<input type="file" id="bk-file" accept="application/json,.json" hidden></div>';
+  }
+  function wireBackup() {
+    document.getElementById('bk-save').onclick = () => { try { backupFile(); } catch (e) { toast('ذخیره‌ی فایل انجام نشد.'); } };
+    const inp = document.getElementById('bk-file');
+    document.getElementById('bk-load').onclick = () => inp.click();
+    inp.onchange = () => { if (inp.files && inp.files[0]) restoreFile(inp.files[0]); inp.value = ''; };
+  }
+
+  let toastTimer;
+  function toast(msg) {
+    const t = document.getElementById('toast'); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+  }
+
+  document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => { view = b.dataset.view; render(); });
+
+  render();
+  initStore();
+})();
+</script>
+</body>
+</html>
