@@ -31,6 +31,12 @@ export function Footer() {
           <span className="text-brass">$</span> {siteConfig.name} — built &amp; logged in public, {year}
         </p>
         <div className="flex items-center gap-4">
+          <a
+            href="/dental-notes.html"
+            className="font-mono text-xs text-ink-soft transition-colors hover:text-brass"
+          >
+            Dental notes
+          </a>
           {siteConfig.socials.map((social) => (
             <Link
               key={social.url}
