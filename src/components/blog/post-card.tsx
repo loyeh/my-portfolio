@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { BlogPost } from "@/types/content";
 import { LogRow } from "@/components/ui/log-row";
 import { formatDate } from "@/lib/utils";
+import { PostViewCount } from "@/components/blog/post-view-counts";
 
 export function PostCard({ post }: { post: BlogPost }) {
   return (
@@ -14,7 +15,10 @@ export function PostCard({ post }: { post: BlogPost }) {
           {post.title}
         </h3>
         <p className="mt-2 text-sm text-ink-soft">{post.description}</p>
-        <p className="mt-3 font-mono text-xs text-ink-soft">{post.readingTime}</p>
+        <p className="mt-3 font-mono text-xs text-ink-soft">
+          {post.readingTime}
+          <PostViewCount slug={post.slug} />
+        </p>
       </Link>
     </LogRow>
   );

@@ -4,6 +4,7 @@ import { siteConfig } from "@/content/site.config";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { PostCard } from "@/components/blog/post-card";
+import { PostViewCountsProvider } from "@/components/blog/post-view-counts";
 
 export const metadata: Metadata = {
   title: `Blog — ${siteConfig.name}`,
@@ -22,11 +23,13 @@ export default function BlogPage() {
       />
 
       {posts.length > 0 ? (
-        <div className="space-y-6">
-          {posts.map((post) => (
-            <PostCard key={post.slug} post={post} />
-          ))}
-        </div>
+        <PostViewCountsProvider slugs={posts.map((post) => post.slug)}>
+          <div className="space-y-6">
+            {posts.map((post) => (
+              <PostCard key={post.slug} post={post} />
+            ))}
+          </div>
+        </PostViewCountsProvider>
       ) : (
         <p className="font-mono text-sm text-ink-soft">No posts yet.</p>
       )}

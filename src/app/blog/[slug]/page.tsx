@@ -9,6 +9,7 @@ import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { mdxComponents } from "@/components/blog/mdx-components";
+import { ViewCounter } from "@/components/blog/view-counter";
 import Link from "next/link";
 
 export async function generateStaticParams() {
@@ -45,6 +46,7 @@ export default async function BlogPostPage({
       <article className="mx-auto max-w-2xl">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-brass">
           {formatDate(post.date)} · {post.readingTime}
+          <ViewCounter slug={slug} />
         </p>
         <h1 className="mt-3 font-display text-4xl italic tracking-tight text-ink md:text-5xl">
           {post.title}
