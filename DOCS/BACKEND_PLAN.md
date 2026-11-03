@@ -171,7 +171,7 @@ All endpoints except `/HealthCheck` require `X-API-Key`.
 | POST | `/portfolioapi/v1/ContactMessages` | `ContactMessageRequestDto {name, email, message}` | `ContactMessageCreatedResponseDto {id, createdAt}` (201) |
 | GET | `/portfolioapi/v1/ContactMessages?skip=&limit=` | none | `ContactMessageCollectionResponseDto {totalCount, contactMessageCollection[]}`, newest first |
 | GET | `/portfolioapi/v1/ContactMessages/{contactMessageId}` | none | `ContactMessageResponseDto`, or a 404 envelope |
-| POST | `/portfolioapi/v1/PostViews/{slug}` | none. Visitor comes from the `X-Forwarded-For` and `User-Agent` headers | `PostViewResponseDto {slug, viewCount, counted}` |
+| POST | `/portfolioapi/v1/PostViews/{slug}` | none. Visitor comes from the `X-Client-IP` and `User-Agent` headers | `PostViewResponseDto {slug, viewCount, counted}` |
 | GET | `/portfolioapi/v1/PostViews/{slug}` | none | `PostViewResponseDto` (0 if never viewed) |
 | GET | `/portfolioapi/v1/PostViews?slugs=a&slugs=b` | `slugs` 1–100, each matching `^[a-z0-9]+(?:-[a-z0-9]+)*$` | `PostViewCollectionResponseDto {totalCount, postViewCollection[]}` |
 

@@ -31,7 +31,9 @@ All endpoints use the envelope `{ metadata: { status, requestId, correlationId, 
 | `recordPostView` | `POST /portfolioapi/v1/PostViews/{slug}` | `{ slug, viewCount, counted }` |
 | `getPostViews` | `GET /portfolioapi/v1/PostViews?slugs=a&slugs=b` (1–100 slugs) | `{ totalCount, postViewCollection: [{ slug, viewCount }] }` |
 
-Every call sends `X-API-Key`, plus the visitor's `X-Forwarded-For` (first entry) and `User-Agent`. Inside an action these come from `await headers()` (`next/headers`).
+Every call sends `X-API-Key`, plus the visitor's IP as `X-Client-IP` and their `User-Agent`. Inside an action these come from `await headers()` (`next/headers`): the IP is the first incoming `x-forwarded-for` entry, which Vercel sets to the real visitor.
+
+> **Not `X-Forwarded-For` on the outbound call.** Vercel overwrites that header on outbound requests with the calling server's IP. If we sent it, every visitor would look like the same one, breaking view de-duplication and the contact rate limit. The backend reads `X-Client-IP` instead.
 The backend's single-post `GET /PostViews/{slug}` isn't needed, because recording a view already returns the count.
 
 ## Changes, file by file
@@ -59,7 +61,7 @@ Every type is explicit, with no `any`.
 ### 4. `src/lib/backend.ts` (new, server only)
 - Starts with `import "server-only"`.
 - `isBackendConfigured()` and `class BackendError extends Error { status: number | null }`.
-- `visitorHeaders()` reads `await headers()` and returns `{ "X-Forwarded-For", "User-Agent" }` (first XFF entry only).
+- `getVisitor()` reads `await headers()` and returns `{ ip, userAgent }`, with the IP taken from the first incoming `x-forwarded-for` entry. `backendFetch` sends them as `X-Client-IP` and `User-Agent`.
 - `backendFetch<T>(path, { method, body, searchParams })`:
   - Sets `X-API-Key`, `Content-Type` and `Accept`, plus the visitor headers.
   - Uses `cache: "no-store"` and `signal: AbortSignal.timeout(3000)`.

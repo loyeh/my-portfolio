@@ -40,7 +40,10 @@ interface VisitorInfo {
   userAgent: string | null;
 }
 
-/** The original visitor's IP (first X-Forwarded-For entry) and user agent. */
+/**
+ * The original visitor's IP and user agent, read from the incoming request.
+ * On Vercel the first x-forwarded-for entry here is the real visitor IP.
+ */
 export async function getVisitor(): Promise<VisitorInfo> {
   const h = await headers();
   const forwardedFor = h.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
@@ -70,7 +73,9 @@ async function backendFetch<T>(path: string, { method, body, searchParams }: Bac
   const visitor = await getVisitor();
   const requestHeaders = new Headers({ Accept: "application/json", "X-API-Key": apiKey });
   if (body) requestHeaders.set("Content-Type", "application/json");
-  if (visitor.ip) requestHeaders.set("X-Forwarded-For", visitor.ip);
+  // Not X-Forwarded-For: Vercel overwrites that on outbound calls with this server's IP,
+  // which would collapse every visitor into one. The backend reads X-Client-IP.
+  if (visitor.ip) requestHeaders.set("X-Client-IP", visitor.ip);
   if (visitor.userAgent) requestHeaders.set("User-Agent", visitor.userAgent);
 
   const response = await fetch(url, {

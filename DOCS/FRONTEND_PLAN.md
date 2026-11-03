@@ -42,7 +42,7 @@ BACKEND_API_KEY=                    # must equal API_KEY in the backend repo's .
 
 ## 3. Client IP forwarding
 
-On Vercel, the action reads the visitor's IP from the first `x-forwarded-for` entry (falling back to `x-real-ip`) and the user agent from `user-agent`. It forwards both to the backend as `X-Forwarded-For` and `User-Agent`. The backend validates the IP in `parse_client_ip`.
+On Vercel, the action reads the visitor's IP from the first `x-forwarded-for` entry (falling back to `x-real-ip`) and the user agent from `user-agent`. It forwards both to the backend as `X-Client-IP` and `User-Agent`. It never sends `X-Forwarded-For`, because Vercel overwrites that header on outbound calls with the server's own IP. The backend validates the IP in `parse_client_ip`.
 
 ## 4. Bot filtering
 
