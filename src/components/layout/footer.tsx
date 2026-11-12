@@ -37,6 +37,12 @@ export function Footer() {
           >
             Dental notes
           </a>
+          <a
+            href="/steel-prototype.html"
+            className="font-mono text-xs text-ink-soft transition-colors hover:text-brass"
+          >
+            Steel site prototype
+          </a>
           {siteConfig.socials.map((social) => (
             <Link
               key={social.url}
